@@ -79,26 +79,26 @@ get "/actors/:id" do
 end
 get '/movies' do
   @movies = db_connection do |conn|
-    conn.exec_params("SELECT movies.title , movies.year, movies.rating, studios.name AS studio, genres.name
+    conn.exec_params("SELECT movies.title , movies.year, movies.rating, studios.name AS studio, genres.name AS genres
     FROM movies
-    JOIN genres ON movies.genre_id = genres.id
-    JOIN studios ON movies.studio_id = studios.id
+    LEFT OUTER JOIN genres ON movies.genre_id = genres.id
+    LEFT OUTER JOIN studios ON movies.studio_id = studios.id
     ORDER BY movies.title ASC")
   end
-    @movies
+    @movies.to_a
   erb :'movies/index'
 end
 
 get '/movies/:movie_id' do
   @movie_id = params[:movie_id]
+  @movie = @movies.to_a
   @movies = db_connection do |conn|
-    "(SELECT movies.title , movies.year, movies.rating, studios.name AS studio, genres.name
+    ("SELECT movies.title, movies.year,movies.rating,studios.name AS studio, genres.name
     FROM movies
-    JOIN genres ON movies.genre_id = genres.id
-    JOIN studios ON movies.studio_id = studios.id
-    WHERE
-    ORDER BY movies.year ASC)"
+    LEFT OUTER JOIN genres ON movies.genre_id = genres.id
+    LEFT OUTER JOIN studios ON movies.studio_id = studios.id
+    ")
   end
-  @movies
+  @movies.to_a
   erb :'movies/show'
 end
