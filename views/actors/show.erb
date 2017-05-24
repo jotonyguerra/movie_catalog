@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Detail</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
+  <style>
+  table, td, th {border: 1px solid black;}
+  table {border-collapse: collapse;width: 100%;}
+  th {text-align: left;}
+  h1 {text-align: center;}
+</style>
+
+
+  <body>
+    <%if @actor %>
+    <h1><%=@actor["name"]%></h1>
+    <%end%>
+    <%if @movies %>
+    <%@movies.each do |movie| %>
+      <table class="w3-table w3-border">
+      <tr>
+      <th>Movie Title</th>
+      <th>Movie Year</th>
+      <th>Character</th>
+      </tr>
+      <tr>
+        <td><a href='/movies/<%=movie["id"]%>'><%=movie["title"]%></td>
+        <td><%=movie["year"]%></td>
+        <td><%=movie["character"]%></td>
+      </tr>
+      </table>
+    <%end%>
+    <%end%>
+
+  </body>
+
+</html>

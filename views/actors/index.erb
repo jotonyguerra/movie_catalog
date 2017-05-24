@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Actors</title>
+    <link rel="stylesheet" href="/home.css">
+  </head>
+
+  <body>
+    <h1> Actors </h1>
+    <% if @actors %>
+      <%@actors.each do |actor| %>
+      <li> <a href='/actors/<%=actor["id"]%>'> <%=actor["name"]%> </a>
+      </li>
+      <%end%>
+    <%end%>
+  </body>
+
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of Movies</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
+  <style>
+  h1 {text-align: center;}
+  table, td, th {border: 1px solid black;}
+  table {border-collapse: collapse;width: 100%;}
+  th {text-align: left;}
+  th {color: green;}
+
+  </style>
+
+  <body>
+    <h1> Movies </h1> </text-align>
+    <%if @movies%>
+    <%@movies.each do |movie|%>
+    <table class="w3-table w3-striped w3-bordered">
+    <tr>
+    <th>Movie Title</th>
+    <th>Movie Year</th>
+    <th>Movie Rating</th>
+    <th>Studio</th>
+    </tr>
+      <tr>
+        <td style="margin-right:1px"><a href='/movies/<%=movie["id"]%>'><%= movie["title"]%></a></td>
+        <td><%= movie["year"]%></td>
+        <td><%= movie["rating"]%></td>
+        <td><%= movie["studio"]%></td>
+      </tr>
+    </table>
+
+    <%end%>
+    <%end%>
+
+</body>
+</html>
