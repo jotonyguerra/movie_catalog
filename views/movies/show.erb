@@ -1,9 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title> </title>
-
+  <title>Movie </title>
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
+
+<body>
+
+  <%@movies.each do |movie|%>
+  <table class="w3-table w3-striped w3-bordered">
+  <tr>
+  <th>Movie Title</th>
+  <th>Movie Year</th>
+  <th>Movie Rating</th>
+  <th>Genre</th>
+  <th>Studio</th>
+  <th>Character and Actors</th>
+  </tr>
+    <tr>
+      <td><a href='/movies/<%=movie["id"]%>'><font color="blue"><%=movie["title"]%></font></a></td>
+      <td><%= movie["year"]%></td>
+      <td><%= movie["rating"]%></td>
+      <td><%= movie["genres"]%></td>
+      <td><%= movie["studio"]%></td>
+      <%@actors.each do |actor|%>
+      <td><li><%= actor["character"]%> played by <a href='/actors/<%=actor["aid"]%>'><%= actor["actor"]%>></a></li></td>
+      <%end%>
+    </tr>
+  </table>
+  <%end%>
+
+
+</body>
 
 
 

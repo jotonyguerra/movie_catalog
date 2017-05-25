@@ -19,28 +19,14 @@ def list_actors
   end
   return @actors.to_a
 end
-
-def list_movies(actor_name)
+def movies_id
   @movies = []
   @movies = db_connection do |conn|
-    conn.exec_params("SELECT genres.name AS Genre, movies.title,movies.year, movies.id
-      From actors
-      JOIN cast_members ON cast_members.actor_id = actors.id
-      JOIN movies ON movies.id = cast_members.movie_id
-      JOIN genres ON movies.genre_id = genres.id
-      WHERE actors.name = #{actor_name}
-      ")
-    end
-    return @movies.to_a
+    conn.exec_params("SELECT movies.title, movies.id
+    FROM movies")
+  end
+  return @movies.to_a
 end
-# conn.exec_params("SELECT genres.name AS Genre, movies.title,movies.year, movies.id
-#   From actors
-#   JOIN cast_members ON cast_members.actor_id = actors.id
-#   JOIN movies ON movies.id = cast_members.movie_id
-#   JOIN genres ON movies.genre_id = genres.id
-#   WHERE actors.name = #{actor_name}
-#   ")
-# end
 
 def db_connection
   begin
@@ -50,7 +36,6 @@ def db_connection
     connection.close
   end
 end
-
 
 get "/" do
   redirect "/actors"
@@ -78,27 +63,40 @@ get "/actors/:id" do
    erb :'actors/show'
 end
 get '/movies' do
+  @id = params[:id] # params isnt there?
   @movies = db_connection do |conn|
-    conn.exec_params("SELECT movies.title , movies.year, movies.rating, studios.name AS studio, genres.name AS genres
+    conn.exec_params("SELECT movies.id, movies.title, movies.year, movies.rating, studios.name AS studio, genres.name AS genres
     FROM movies
     LEFT OUTER JOIN genres ON movies.genre_id = genres.id
     LEFT OUTER JOIN studios ON movies.studio_id = studios.id
     ORDER BY movies.title ASC")
   end
-    @movies.to_a
+  @movies.to_a
   erb :'movies/index'
 end
 
-get '/movies/:movie_id' do
-  @movie_id = params[:movie_id]
-  @movie = @movies.to_a
+get '/movies/:id' do
+  @movies = movies_id
+  @id = params[:id]
+  @movie = @movies.find {|movie| movie["id"] == params["id"] }
   @movies = db_connection do |conn|
-    ("SELECT movies.title, movies.year,movies.rating,studios.name AS studio, genres.name
+    conn.exec_params("SELECT movies.id, movies.title, movies.year,movies.rating,studios.name AS studio, genres.name AS genres, cast_members.character AS character
     FROM movies
     LEFT OUTER JOIN genres ON movies.genre_id = genres.id
     LEFT OUTER JOIN studios ON movies.studio_id = studios.id
+    LEFT OUTER JOIN cast_members ON movies.id = cast_members.id
+    WHERE movies.id = '#{@movie["id"]}'
     ")
   end
-  @movies.to_a
+  @actors = db_connection do |conn|
+    conn.exec_params("SELECT actors.name AS actor, actors.id AS aid, cast_members.character AS character, movies.title
+     From actors
+     JOIN cast_members ON cast_members.actor_id = actors.id
+     JOIN movies ON movies.id = cast_members.movie_id
+     JOIN genres ON movies.genre_id = genres.id
+     WHERE movies.id = '#{@movie["id"]}'
+     ")
+   end
+
   erb :'movies/show'
 end
